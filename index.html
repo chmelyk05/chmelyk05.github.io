@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat room</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Chat room</h1>
+    
+    <form id="messageForm">
+        <input type="text" id="messageInput" placeholder="Enter a message">
+        <button type="submit">Send</button>
+    </form><br>
+    
+    <div id="messages"></div>
+
+
+    <script>
+        function loadMessages() {
+            $.ajax({
+                url: "messages.txt",
+                success: function (data) {
+                    $("#messages").html(data);
+                },
+                error: function () {
+                    $("#messages").text("Cant read the messages.");
+                }
+            });
+        }
+
+        $("#messageForm").submit(function (event) {
+            event.preventDefault();  
+
+            var message = $("#messageInput").val();
+            $.ajax({
+                type: "POST",
+                url: "message.php", 
+                data: { message: message },
+                success: function () {
+                    $("#messageInput").val(""); 
+                    loadMessages(); 
+                }
+            });
+        });
+
+        setInterval(loadMessages, 1000); 
+    </script>
+</body>
+</html>
+
